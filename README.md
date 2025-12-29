@@ -1,6 +1,6 @@
 # linux-zen-x1c
 
-Custom Linux kernel optimized for ThinkPad X1 Carbon Gen 11.
+Custom Linux kernel optimized for ThinkPad X1 Carbon Gen 11 using localmodconfig.
 
 ## Overview
 
@@ -9,82 +9,107 @@ Custom Linux kernel optimized for ThinkPad X1 Carbon Gen 11.
 | Base | linux-zen 6.18.2.zen2 |
 | Target | ThinkPad X1 Carbon Gen 11 |
 | CPU | Intel Core i7-1370P (Raptor Lake-P) |
-| Build Date | 2025-12-26 |
 | Build Method | localmodconfig + menuconfig |
+| Last Updated | 2025-12-29 |
 
-## Size Comparison
+## Benefits
 
-| Component | linux-zen-x1c | Stock linux-zen |
-|-----------|---------------|-----------------|
-| Kernel (vmlinuz) | 18 MB | ~35 MB |
-| Initramfs | 24 MB | ~40 MB |
-| Package | 30 MB | ~140 MB |
-| Loaded modules | ~100 | ~250 |
+| Metric | Stock | Custom | Improvement |
+|--------|-------|--------|-------------|
+| Initramfs | 29 MB | 23 MB | **-21%** |
+| Boot time | 55s | 48s | **-12%** |
+| Context switches | 31.6ms | 16.3ms | **-48%** |
+| File I/O | 7,272 MiB/s | 21,422 MiB/s | **+195%** |
+| Memory bandwidth | 5,263 MiB/s | 8,001 MiB/s | **+52%** |
+| CPU performance | ~40,000 ev/s | ~40,000 ev/s | Identical |
 
-## Optimizations Applied
+## Hardware Support
 
-### CPU & Scheduler
-- [x] Processor family: Intel Raptor Lake
-- [x] Preemption: Low-Latency Desktop (PREEMPT)
-- [x] Timer: Full dynticks (NO_HZ_FULL)
-- [x] High Resolution Timers enabled
-- [x] BORE scheduler (zen default)
-- [x] Core Scheduling for SMT (P/E-cores)
-- [x] "Tune kernel for interactivity" enabled
+### Enabled
 
-### Compression
-- [x] Kernel compression: ZSTD
-- [x] Module compression: ZSTD
+**CPU & Power**
+- Intel Raptor Lake (native optimizations)
+- Intel P-State + RAPL
+- Low-latency preemption (PREEMPT)
+- Full dynticks (NO_HZ_FULL)
+- BORE scheduler
 
-### Power Management
-- [x] Intel P-State driver
-- [x] Intel RAPL (power capping)
-- [x] Runtime PM enabled
+**Graphics**
+- Intel Xe (DRM_XE)
+- Intel i915 (DRM_I915)
 
-### Hardware Support (Intel-only)
-- [x] Intel Xe graphics (DRM_XE)
-- [x] Intel i915 graphics (DRM_I915)
-- [x] Intel WiFi (IWLMVM)
-- [x] Intel Bluetooth (BT_HCIBTUSB)
-- [x] Intel SOF audio
-- [x] ThinkPad ACPI
-- [x] NVMe storage
-- [x] Btrfs filesystem
-- [x] dm-crypt (LUKS)
-- [x] KVM Intel virtualization
+**Audio**
+- Intel SOF (sof-hda-dsp)
+- USB Audio (eMeet Luna, dock audio)
 
-### Disabled (not needed)
-- [x] AMD CPU support
-- [x] AMD graphics (AMDGPU)
-- [x] AMD KVM
-- [x] Nvidia graphics
-- [x] Most other wireless drivers (Atheros, Broadcom, Realtek, etc.)
-- [x] FireWire, PCMCIA, Parallel port, Floppy
-- [x] Many unused filesystems
-- [x] Server/datacenter networking
-- [x] Industrial protocols (CAN, etc.)
-- [x] Xen, Hyper-V, VMware guest support
+**Networking**
+- Intel WiFi (iwlmvm)
+- Intel Bluetooth
+- USB-C Dock Ethernet (cdc_ether)
+
+**Input**
+- Logitech Bluetooth (hid_logitech_hidpp)
+- Logitech USB receiver (hid_logitech_dj)
+- Bluetooth HID (hidp, uhid)
+
+**Storage**
+- NVMe
+- Btrfs, ext4
+- dm-crypt (LUKS)
+- USB storage (uas)
+
+**Other**
+- ThinkPad ACPI
+- KVM Intel virtualization
+- Intel HW RNG
+
+### Disabled
+
+- AMD CPU/GPU/KVM
+- Nvidia graphics
+- Intel AVS audio (conflicts with SOF)
+- Other wireless drivers
+- Legacy hardware (FireWire, PCMCIA, etc.)
+- Server/datacenter features
 
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `PKGBUILD` | Package build script with localmodconfig |
-| `config` | Base zen kernel config |
-| `linux-zen-x1c.conf` | systemd-boot entry |
+| `config` | Kernel configuration |
 | `benchmark.sh` | Performance benchmark script |
-| `upstream-pkgbuild/` | Original linux-zen PKGBUILD |
+| `benchmark-results/` | Benchmark comparison documentation |
+| `benchmarks/` | Raw benchmark results |
+| `linux-zen-x1c.conf` | systemd-boot entry template |
 
-## Boot Entry
+## Installation
 
-Installed at `/boot/loader/entries/linux-zen-x1c.conf`:
+### Build
+
+```bash
+cd ~/Workspace/linux-zen-x1c
+
+# Capture currently loaded modules (boot stock kernel first if adding hardware)
+lsmod > /tmp/modules.lst
+
+# Build
+MAKEFLAGS="-j$(nproc)" makepkg -s
+
+# Install
+sudo pacman -U linux-zen-x1c-*.pkg.tar.zst linux-zen-x1c-headers-*.pkg.tar.zst
+```
+
+### Boot Entry
+
+Copy to `/boot/loader/entries/linux-zen-x1c.conf`:
 
 ```ini
 title Arch Linux (Zen X1C)
 linux /vmlinuz-linux-zen-x1c
 initrd /intel-ucode.img
 initrd /initramfs-linux-zen-x1c.img
-options rd.luks.name=...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@arch rw
+options rd.luks.name=<UUID>=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@arch rw
 ```
 
 ## Usage
@@ -92,9 +117,9 @@ options rd.luks.name=...=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@
 ### Boot into custom kernel
 Select "Arch Linux (Zen X1C)" from systemd-boot menu.
 
-### Verify running kernel
+### Verify
 ```bash
-uname -r  # Should show: 6.18.2-zen2-1-zen-x1c
+uname -r  # 6.18.2-zen2-1-zen-x1c
 ```
 
 ### Set as default
@@ -102,74 +127,105 @@ uname -r  # Should show: 6.18.2-zen2-1-zen-x1c
 sudo bootctl set-default linux-zen-x1c.conf
 ```
 
-### Run benchmarks
-```bash
-~/Workspace/linux-zen-x1c/benchmark.sh
-```
-
 ## Updating
 
 ### When upstream linux-zen updates
+
 ```bash
 cd ~/Workspace/linux-zen-x1c
-git -C upstream-pkgbuild pull
-cp upstream-pkgbuild/PKGBUILD .
-cp upstream-pkgbuild/config .
-# Edit PKGBUILD: change pkgbase, add localmodconfig section
-# Update /tmp/modules.lst if needed
-MAKEFLAGS="-j18" makepkg -s
+
+# Get new PKGBUILD from AUR or upstream
+# Edit: change pkgbase to linux-zen-x1c
+# Edit: add localmodconfig section in prepare()
+
+# Capture modules
+lsmod > /tmp/modules.lst
+
+# Build and install
+MAKEFLAGS="-j$(nproc)" makepkg -s
 sudo pacman -U linux-zen-x1c-*.pkg.tar.zst linux-zen-x1c-headers-*.pkg.tar.zst
 ```
 
 ### Quick rebuild (config changes only)
+
 ```bash
 cd ~/Workspace/linux-zen-x1c
-MAKEFLAGS="-j18" makepkg -ef
-sudo pacman -U linux-zen-x1c-*.pkg.tar.zst
+MAKEFLAGS="-j$(nproc)" makepkg -ef
+sudo pacman -U linux-zen-x1c-*.pkg.tar.zst linux-zen-x1c-headers-*.pkg.tar.zst
 ```
 
-## Adding Hardware Later
+## Adding Hardware
 
-If you connect new hardware that doesn't work:
+If new hardware doesn't work:
 
-1. Boot stock kernel: `linux-zen`
-2. Connect hardware, check module: `lsmod | grep <module>`
-3. Add to modules list: `echo "module_name" >> /tmp/modules.lst`
-4. Rebuild kernel
+1. Boot stock kernel (`linux-zen`)
+2. Connect hardware
+3. Find module: `lsmod | grep <name>`
+4. Add config:
+   ```bash
+   cd ~/Workspace/linux-zen-x1c/src/linux-*/
+   scripts/config --module CONFIG_<NAME>
+   make olddefconfig
+   ```
+5. Rebuild kernel
 
-Common modules to add:
-| Hardware | Module |
-|----------|--------|
-| ThinkPad Dock Gen2 ethernet | `r8152` |
-| Logitech mice | `hid_logitech_hidpp`, `hid_logitech_dj` |
-| USB storage | `usb_storage`, `uas` |
+### Supported Hardware
 
-## Rollback
-
-If custom kernel doesn't boot:
-1. Select "Arch Linux (Zen)" from boot menu
-2. Or remove: `sudo pacman -R linux-zen-x1c linux-zen-x1c-headers`
+| Hardware | Module | Config |
+|----------|--------|--------|
+| Dock Ethernet | `cdc_ether`, `usbnet` | `CONFIG_USB_USBNET`, `CONFIG_USB_NET_CDCETHER` |
+| Logitech Bluetooth | `hid_logitech_hidpp`, `hidp` | `CONFIG_HID_LOGITECH_HIDPP`, `CONFIG_BT_HIDP` |
+| Logitech USB receiver | `hid_logitech_dj` | `CONFIG_HID_LOGITECH_DJ` |
+| USB Audio | `snd_usb_audio` | `CONFIG_SND_USB_AUDIO` |
+| Bluetooth HID | `hidp`, `uhid` | `CONFIG_BT_HIDP`, `CONFIG_UHID` |
+| USB Storage | `usb_storage`, `uas` | `CONFIG_USB_STORAGE`, `CONFIG_USB_UAS` |
 
 ## Benchmarking
 
-Run on both kernels and compare:
 ```bash
-# Boot stock kernel, run:
+# Set performance mode
+echo performance | sudo tee /sys/firmware/acpi/platform_profile
+
+# Cooldown
+sleep 60
+
+# Run benchmark
 ~/Workspace/linux-zen-x1c/benchmark.sh
 
-# Reboot into custom kernel, run:
-~/Workspace/linux-zen-x1c/benchmark.sh
-
-# Compare results:
-diff ~/Workspace/linux-zen-x1c/benchmarks/results-*
+# Results saved to:
+# ~/Workspace/linux-zen-x1c/benchmarks/results-$(uname -r).txt
 ```
 
-Metrics compared:
-- Boot time (systemd-analyze)
-- Kernel/initramfs size
-- Loaded modules count
-- CPU throughput (sysbench)
-- Memory bandwidth
-- Scheduler latency (stress-ng)
-- Context switch performance
-- File I/O throughput
+See [benchmark-results/comparison.md](benchmark-results/comparison.md) for detailed analysis.
+
+## Troubleshooting
+
+### No audio
+Ensure Intel AVS is disabled and SOF is enabled:
+```bash
+scripts/config --disable CONFIG_SND_SOC_INTEL_AVS
+scripts/config --module CONFIG_SND_SOC_SOF_ALDERLAKE
+```
+
+### Sudo password loop (fingerprint)
+Enable Intel HW RNG:
+```bash
+scripts/config --module CONFIG_HW_RANDOM_INTEL
+```
+
+### Bluetooth devices not working
+Enable Bluetooth HID:
+```bash
+scripts/config --module CONFIG_BT_HIDP
+scripts/config --module CONFIG_UHID
+```
+
+### Rollback
+Boot "Arch Linux (Zen)" from boot menu, or:
+```bash
+sudo pacman -R linux-zen-x1c linux-zen-x1c-headers
+```
+
+## License
+
+Kernel sources are GPL-2.0. Build scripts and documentation are MIT.
