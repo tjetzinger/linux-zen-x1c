@@ -2,6 +2,19 @@
 
 Custom Linux kernel optimized for ThinkPad X1 Carbon Gen 11 using localmodconfig.
 
+## System Requirements
+
+This kernel is designed for a specific boot configuration:
+
+| Component | Configuration |
+|-----------|---------------|
+| Bootloader | systemd-boot |
+| Encryption | LUKS2 (dm-crypt) |
+| Root filesystem | Btrfs with subvolumes |
+| Initramfs | mkinitcpio with sd-encrypt hook |
+
+The boot process uses systemd-boot with LUKS encryption via the `sd-encrypt` mkinitcpio hook, allowing automatic unlock with a keyfile stored on the EFI partition.
+
 ## Overview
 
 | Property | Value |
@@ -85,6 +98,50 @@ Custom Linux kernel optimized for ThinkPad X1 Carbon Gen 11 using localmodconfig
 
 ## Installation
 
+### Prerequisites
+
+```bash
+# Install build dependencies
+sudo pacman -S base-devel bc cpio gettext libelf pahole perl python tar xz zstd
+```
+
+### Download External Sources
+
+The build requires external sources that are not tracked in git:
+
+| Source | URL |
+|--------|-----|
+| Linux kernel | `https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.2.tar.xz` |
+| Kernel signature | `https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.2.tar.sign` |
+| Zen patch | `https://github.com/zen-kernel/zen-kernel/releases/download/v6.18.2-zen2/linux-v6.18.2-zen2.patch.zst` |
+| Zen patch signature | `https://github.com/zen-kernel/zen-kernel/releases/download/v6.18.2-zen2/linux-v6.18.2-zen2.patch.zst.sig` |
+
+Download automatically with makepkg:
+
+```bash
+cd ~/Workspace/linux-zen-x1c
+
+# Download sources only (no build)
+makepkg -o
+
+# Or download and extract
+makepkg -od
+```
+
+Or download manually:
+
+```bash
+cd ~/Workspace/linux-zen-x1c
+
+# Kernel source
+curl -LO https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.2.tar.xz
+curl -LO https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.2.tar.sign
+
+# Zen patches
+curl -LO https://github.com/zen-kernel/zen-kernel/releases/download/v6.18.2-zen2/linux-v6.18.2-zen2.patch.zst
+curl -LO https://github.com/zen-kernel/zen-kernel/releases/download/v6.18.2-zen2/linux-v6.18.2-zen2.patch.zst.sig
+```
+
 ### Build
 
 ```bash
@@ -93,23 +150,40 @@ cd ~/Workspace/linux-zen-x1c
 # Capture currently loaded modules (boot stock kernel first if adding hardware)
 lsmod > /tmp/modules.lst
 
-# Build
+# Build (downloads sources if not present)
 MAKEFLAGS="-j$(nproc)" makepkg -s
 
 # Install
 sudo pacman -U linux-zen-x1c-*.pkg.tar.zst linux-zen-x1c-headers-*.pkg.tar.zst
 ```
 
-### Boot Entry
+### Boot Entry (systemd-boot + LUKS)
 
-Copy to `/boot/loader/entries/linux-zen-x1c.conf`:
+Create `/boot/loader/entries/linux-zen-x1c.conf`:
 
 ```ini
 title Arch Linux (Zen X1C)
 linux /vmlinuz-linux-zen-x1c
 initrd /intel-ucode.img
 initrd /initramfs-linux-zen-x1c.img
-options rd.luks.name=<UUID>=cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@arch rw
+options rd.luks.name=<LUKS-UUID>=cryptroot root=/dev/mapper/cryptroot rd.luks.key=<LUKS-UUID>=/luks-keyfile.bin:UUID=<EFI-UUID> rd.luks.options=<LUKS-UUID>=keyfile-timeout=5s rootflags=subvol=@arch rw
+```
+
+**Parameters:**
+| Parameter | Description |
+|-----------|-------------|
+| `rd.luks.name=<UUID>=cryptroot` | LUKS partition UUID and mapper name |
+| `rd.luks.key=<UUID>=/path:UUID=<EFI>` | Keyfile path on EFI partition |
+| `rd.luks.options=<UUID>=keyfile-timeout=5s` | Fallback to password after 5s |
+| `rootflags=subvol=@arch` | Btrfs subvolume for root |
+
+Get your UUIDs:
+```bash
+# LUKS partition UUID
+sudo blkid -s UUID -o value /dev/nvme0n1p2
+
+# EFI partition UUID
+sudo blkid -s UUID -o value /dev/nvme0n1p1
 ```
 
 ## Usage
