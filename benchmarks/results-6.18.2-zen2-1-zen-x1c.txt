@@ -1,0 +1,58 @@
+========================================
+Kernel Benchmark: 6.18.2-zen2-1-zen-x1c
+Date: Mo 29. Dez 12:46:20 CET 2025
+========================================
+
+### BOOT TIME ###
+Startup finished in 16.948s (firmware) + 4.056s (loader) + 1.956s (kernel) + 7.083s (initrd) + 18.124s (userspace) = 48.169s 
+graphical.target reached after 17.534s in userspace.
+15.051s sshd.service
+ 9.678s sys-devices-pci0000:00-0000:00:14.0-usb3-3\x2d7-3\x2d7:1.1-0003:1050:0407.0002-hidraw-hidraw1.device
+ 9.678s dev-hidraw1.device
+ 9.676s dev-disk-by\x2did-ata\x2dSanDisk_SD9SN8W1T00_20022F444907.device
+ 9.676s dev-disk-by\x2did-usb\x2dSanDisk_Extreme_SSD_323030334435343030373732\x2d0:0.device
+ 9.676s sys-devices-pci0000:00-0000:00:0d.0-usb2-2\x2d3-2\x2d3.3-2\x2d3.3.4-2\x2d3.3.4:1.0-host1-target1:0:0-1:0:0:0-block-sda.device
+ 9.676s dev-disk-by\x2ddiskseq-2.device
+ 9.676s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusbv3\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
+ 9.676s dev-disk-by\x2did-wwn\x2d0x5001b444a834a72b.device
+ 9.676s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusb\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
+
+### KERNEL SIZE ###
+-rwxr-xr-x 1 root root 17M 23. Dez 00:23 /boot/vmlinuz-linux-zen
+-rwxr-xr-x 1 root root 17M 29. Dez 12:18 /boot/vmlinuz-linux-zen-x1c
+-rwxr-xr-x 1 root root 23M 29. Dez 12:33 /boot/initramfs-linux-zen-x1c.img
+-rwxr-xr-x 1 root root 29M 29. Dez 12:33 /boot/initramfs-linux-zen.img
+
+### MODULES ###
+Loaded modules: 240
+
+### CPU BENCHMARK (sysbench) ###
+    events per second: 31736.87
+    total time:                          10.0008s
+         avg:                                    0.63
+         max:                                   36.89
+
+### MEMORY BENCHMARK ###
+80029.39 MiB transferred (8001.33 MiB/sec)
+    total time:                          10.0004s
+
+### SCHEDULER LATENCY ###
+stress-ng: info:  [63769] skipped: 0
+stress-ng: info:  [63769] passed: 4: cpu (4)
+stress-ng: info:  [63769] failed: 0
+stress-ng: info:  [63769] metrics untrustworthy: 0
+stress-ng: info:  [63769] successful run completed in 10.01 secs
+
+### CONTEXT SWITCHES ###
+         avg:                                   16.26
+         max:                                  204.26
+
+### FILE I/O ###
+    reads/s:                      1371018.95
+    writes/s:                     0.00
+    read, MiB/s:                  21422.17
+    written, MiB/s:               0.00
+
+========================================
+Results saved to: /home/tt/Workspace/linux-zen-x1c/benchmarks/results-6.18.2-zen2-1-zen-x1c.txt
+========================================

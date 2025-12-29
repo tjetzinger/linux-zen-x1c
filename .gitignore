@@ -1,0 +1,22 @@
+# Downloaded sources
+*.tar.xz
+*.tar.gz
+*.tar.sign
+*.patch.zst
+*.patch.zst.sig
+
+# Build outputs
+*.pkg.tar.zst
+*.pkg.tar.xz
+src/
+pkg/
+
+# Upstream reference (update manually)
+upstream-pkgbuild/
+
+# Logs
+*.log
+
+# Editor
+*.swp
+*~

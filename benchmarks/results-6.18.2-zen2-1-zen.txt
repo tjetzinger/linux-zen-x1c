@@ -1,0 +1,58 @@
+========================================
+Kernel Benchmark: 6.18.2-zen2-1-zen
+Date: Fri Dec 26 10:52:09 AM CET 2025
+========================================
+
+### BOOT TIME ###
+Startup finished in 11.966s (firmware) + 6.081s (loader) + 1.867s (kernel) + 16.320s (initrd) + 18.716s (userspace) = 54.952s 
+graphical.target reached after 18.176s in userspace.
+16.913s sys-devices-platform-NTC0702:00-tpm-tpm0.device
+16.913s dev-tpm0.device
+16.847s dev-rfkill.device
+16.847s sys-devices-virtual-misc-rfkill.device
+16.846s dev-ttyS3.device
+16.846s sys-devices-platform-serial8250-serial8250:0-serial8250:0.3-tty-ttyS3.device
+16.845s sys-devices-platform-serial8250-serial8250:0-serial8250:0.2-tty-ttyS2.device
+16.845s dev-ttyS2.device
+16.842s dev-ttyS4.device
+16.842s sys-devices-pci0000:00-0000:00:16.3-0000:00:16.3:0-0000:00:16.3:0.0-tty-ttyS4.device
+
+### KERNEL SIZE ###
+-rwxr-xr-x 1 root root 17M Dec 23 00:23 /boot/vmlinuz-linux-zen
+-rwxr-xr-x 1 root root 17M Dec 26 10:39 /boot/vmlinuz-linux-zen-x1c
+-rwxr-xr-x 1 root root 29M Dec 23 00:25 /boot/initramfs-linux-zen.img
+-rwxr-xr-x 1 root root 23M Dec 26 10:40 /boot/initramfs-linux-zen-x1c.img
+
+### MODULES ###
+Loaded modules: 248
+
+### CPU BENCHMARK (sysbench) ###
+    events per second: 40109.45
+    total time:                          10.0005s
+         avg:                                    0.50
+         max:                                   26.26
+
+### MEMORY BENCHMARK ###
+52644.97 MiB transferred (5262.93 MiB/sec)
+    total time:                          10.0004s
+
+### SCHEDULER LATENCY ###
+stress-ng: info:  [828390] skipped: 0
+stress-ng: info:  [828390] passed: 4: cpu (4)
+stress-ng: info:  [828390] failed: 0
+stress-ng: info:  [828390] metrics untrustworthy: 0
+stress-ng: info:  [828390] successful run completed in 10.01 secs
+
+### CONTEXT SWITCHES ###
+         avg:                                   31.61
+         max:                                  302.26
+
+### FILE I/O ###
+    reads/s:                      465405.28
+    writes/s:                     0.00
+    read, MiB/s:                  7271.96
+    written, MiB/s:               0.00
+
+========================================
+Results saved to: /home/tt/Workspace/linux-zen-x1c/benchmarks/results-6.18.2-zen2-1-zen.txt
+========================================
