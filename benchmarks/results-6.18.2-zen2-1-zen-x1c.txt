@@ -1,21 +1,21 @@
 ========================================
 Kernel Benchmark: 6.18.2-zen2-1-zen-x1c
-Date: Mo 29. Dez 12:46:20 CET 2025
+Date: Mi 31. Dez 12:04:53 CET 2025
 ========================================
 
 ### BOOT TIME ###
-Startup finished in 16.948s (firmware) + 4.056s (loader) + 1.956s (kernel) + 7.083s (initrd) + 18.124s (userspace) = 48.169s 
-graphical.target reached after 17.534s in userspace.
-15.051s sshd.service
- 9.678s sys-devices-pci0000:00-0000:00:14.0-usb3-3\x2d7-3\x2d7:1.1-0003:1050:0407.0002-hidraw-hidraw1.device
- 9.678s dev-hidraw1.device
- 9.676s dev-disk-by\x2did-ata\x2dSanDisk_SD9SN8W1T00_20022F444907.device
- 9.676s dev-disk-by\x2did-usb\x2dSanDisk_Extreme_SSD_323030334435343030373732\x2d0:0.device
- 9.676s sys-devices-pci0000:00-0000:00:0d.0-usb2-2\x2d3-2\x2d3.3-2\x2d3.3.4-2\x2d3.3.4:1.0-host1-target1:0:0-1:0:0:0-block-sda.device
- 9.676s dev-disk-by\x2ddiskseq-2.device
- 9.676s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusbv3\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
- 9.676s dev-disk-by\x2did-wwn\x2d0x5001b444a834a72b.device
- 9.676s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusb\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
+Startup finished in 16.842s (firmware) + 3.049s (loader) + 1.951s (kernel) + 7.047s (initrd) + 18.707s (userspace) = 47.598s 
+graphical.target reached after 18.152s in userspace.
+15.043s sshd.service
+ 8.542s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusb\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
+ 8.542s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusbv3\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0.device
+ 8.542s dev-disk-by\x2did-wwn\x2d0x5001b444a834a72b.device
+ 8.542s dev-disk-by\x2did-usb\x2dSanDisk_Extreme_SSD_323030334435343030373732\x2d0:0.device
+ 8.542s dev-disk-by\x2ddiskseq-2.device
+ 8.542s sys-devices-pci0000:00-0000:00:0d.0-usb2-2\x2d3-2\x2d3.3-2\x2d3.3.4-2\x2d3.3.4:1.0-host1-target1:0:0-1:0:0:0-block-sda.device
+ 8.542s dev-disk-by\x2did-ata\x2dSanDisk_SD9SN8W1T00_20022F444907.device
+ 8.542s dev-sda.device
+ 8.535s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusb\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0\x2dpart-by\x2dpartuuid-9eedda04\x2ddec5\x2d45bd\x2da1ac\x2d7b9792dd8a0a.device
 
 ### KERNEL SIZE ###
 -rwxr-xr-x 1 root root 17M 23. Dez 00:23 /boot/vmlinuz-linux-zen
@@ -24,33 +24,33 @@ graphical.target reached after 17.534s in userspace.
 -rwxr-xr-x 1 root root 29M 29. Dez 12:33 /boot/initramfs-linux-zen.img
 
 ### MODULES ###
-Loaded modules: 240
+Loaded modules: 238
 
 ### CPU BENCHMARK (sysbench) ###
-    events per second: 31736.87
-    total time:                          10.0008s
-         avg:                                    0.63
-         max:                                   36.89
+    events per second: 33284.49
+    total time:                          10.0007s
+         avg:                                    0.60
+         max:                                   30.55
 
 ### MEMORY BENCHMARK ###
-80029.39 MiB transferred (8001.33 MiB/sec)
-    total time:                          10.0004s
+102400.00 MiB transferred (13923.00 MiB/sec)
+    total time:                          7.3531s
 
 ### SCHEDULER LATENCY ###
-stress-ng: info:  [63769] skipped: 0
-stress-ng: info:  [63769] passed: 4: cpu (4)
-stress-ng: info:  [63769] failed: 0
-stress-ng: info:  [63769] metrics untrustworthy: 0
-stress-ng: info:  [63769] successful run completed in 10.01 secs
+stress-ng: info:  [51467] skipped: 0
+stress-ng: info:  [51467] passed: 4: cpu (4)
+stress-ng: info:  [51467] failed: 0
+stress-ng: info:  [51467] metrics untrustworthy: 0
+stress-ng: info:  [51467] successful run completed in 10.00 secs
 
 ### CONTEXT SWITCHES ###
-         avg:                                   16.26
-         max:                                  204.26
+         avg:                                   25.55
+         max:                                  203.12
 
 ### FILE I/O ###
-    reads/s:                      1371018.95
+    reads/s:                      1601498.60
     writes/s:                     0.00
-    read, MiB/s:                  21422.17
+    read, MiB/s:                  25023.42
     written, MiB/s:               0.00
 
 ========================================
