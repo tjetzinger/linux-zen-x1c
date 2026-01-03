@@ -1,0 +1,60 @@
+========================================
+Kernel Benchmark: 6.18.2-2-cachyos
+Date: Sa 3. Jan 16:42:53 CET 2026
+========================================
+
+### BOOT TIME ###
+Startup finished in 18.522s (firmware) + 11.854s (loader) + 1.883s (kernel) + 7.144s (initrd) + 18.384s (userspace) = 57.789s 
+graphical.target reached after 18.059s in userspace.
+15.042s sshd.service
+ 8.844s dev-sda1.device
+ 8.844s dev-disk-by\x2dlabel-borg\x2dbackup.device
+ 8.844s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusbv3\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0\x2dpart1.device
+ 8.844s dev-disk-by\x2did-usb\x2dSanDisk_Extreme_SSD_323030334435343030373732\x2d0:0\x2dpart1.device
+ 8.844s dev-disk-by\x2ddiskseq-2\x2dpart1.device
+ 8.844s dev-disk-by\x2did-ata\x2dSanDisk_SD9SN8W1T00_20022F444907\x2dpart1.device
+ 8.844s dev-disk-by\x2duuid-e767669c\x2d10e1\x2d47b8\x2d81d0\x2d10d0cb231dd9.device
+ 8.844s sys-devices-pci0000:00-0000:00:0d.0-usb2-2\x2d3-2\x2d3.3-2\x2d3.3.4-2\x2d3.3.4:1.0-host1-target1:0:0-1:0:0:0-block-sda-sda1.device
+ 8.844s dev-disk-by\x2dpath-pci\x2d0000:00:0d.0\x2dusb\x2d0:3.3.4:1.0\x2dscsi\x2d0:0:0:0\x2dpart-by\x2duuid-e767669c\x2d10e1\x2d47b8\x2d81d0\x2d10d0cb231dd9.device
+
+### KERNEL SIZE ###
+-rwxr-xr-x 1 root root 17M  3. Jan 15:55 /boot/vmlinuz-linux-cachyos
+-rwxr-xr-x 1 root root 17M 23. Dez 00:23 /boot/vmlinuz-linux-zen
+-rwxr-xr-x 1 root root 17M  3. Jan 10:21 /boot/vmlinuz-linux-zen-x1c
+-rwxr-xr-x 1 root root 33M  3. Jan 15:56 /boot/initramfs-linux-cachyos.img
+-rwxr-xr-x 1 root root 30M  3. Jan 15:47 /boot/initramfs-linux-zen-x1c.img
+-rwxr-xr-x 1 root root 30M  3. Jan 15:47 /boot/initramfs-linux-zen.img
+
+### MODULES ###
+Loaded modules: 260
+
+### CPU BENCHMARK (sysbench) ###
+    events per second: 35958.95
+    total time:                          10.0006s
+         avg:                                    0.56
+         max:                                    5.80
+
+### MEMORY BENCHMARK ###
+102400.00 MiB transferred (14196.74 MiB/sec)
+    total time:                          7.2113s
+
+### SCHEDULER LATENCY ###
+stress-ng: info:  [75503] skipped: 0
+stress-ng: info:  [75503] passed: 4: cpu (4)
+stress-ng: info:  [75503] failed: 0
+stress-ng: info:  [75503] metrics untrustworthy: 0
+stress-ng: info:  [75503] successful run completed in 10.00 secs
+
+### CONTEXT SWITCHES ###
+         avg:                                   22.61
+         max:                                  192.06
+
+### FILE I/O ###
+    reads/s:                      1486038.19
+    writes/s:                     0.00
+    read, MiB/s:                  23219.35
+    written, MiB/s:               0.00
+
+========================================
+Results saved to: /home/tt/Workspace/linux-zen-x1c/benchmarks/results-6.18.2-2-cachyos.txt
+========================================
